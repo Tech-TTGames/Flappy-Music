@@ -1,4 +1,5 @@
 import pygame as pg
+from spritemanagement import SpriteSheet
 import game_objects
 import json
 
@@ -12,4 +13,5 @@ class MusiBirb:
         
         resolution = (self.settings["screen-height"],self.settings["screen-width"])
         self.screen = pg.display.set_mode(resolution)
+        bg_img = SpriteSheet.get_image_of('bg')
         self.birb = game_objects.Birb()
