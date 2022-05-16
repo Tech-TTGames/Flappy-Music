@@ -10,6 +10,6 @@ class MusiBirb:
         pg.init()
         pg.display.set_caption("Flappy Music!")
         
-        resolution = (self.settings["screen-width"],self.settings["screen-height"])
+        resolution = (self.settings["screen-height"],self.settings["screen-width"])
         self.screen = pg.display.set_mode(resolution)
         self.birb = game_objects.Birb()
