@@ -4,7 +4,10 @@ class SpriteSheet:
 
     def __init__(self, filename):
         self.images = {
-            'bg':(3,0,144,256)
+            'bg':(3,0,144,256),
+            'pipe_up':(152,3,25,159),
+            'pipe_down':(180,3,25,159),
+            'floor':(215,10,167,55)
         } #FILL IN WITH COORDINATES TO TEXTURE NAMES!
         try:
             self.sheet = pg.image.load(filename).convert()
