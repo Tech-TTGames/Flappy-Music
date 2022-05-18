@@ -22,3 +22,6 @@ class Birb(pg.sprite.Sprite):
         self.rect.midleft = self.screen_rect.midleft
 
         self.jumping = False
+    
+    def jump(self):
+        pass #IMPLEMENT JUMP

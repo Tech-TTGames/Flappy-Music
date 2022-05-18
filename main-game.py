@@ -18,11 +18,14 @@ class MusiBirb:
         self.bg_img = self.sheet.get_image_of('bg')
         self.bg_img = pg.transform.scale(self.bg_img,self.resolution)
         self.bg_offset = 0
+        self.birb = game_objects.Birb()
     
     def _check_events(self):
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.running = False
+            elif event.type == pg.KEYDOWN and not self.birb.jumping:
+                self.birb.jump()
     
     def _render_background(self):
         self.screen.fill((0,0,0))
