@@ -1,9 +1,10 @@
 import pygame as pg
 import random
 import spritemanagement
+import random
 
 class Pipe(pg.sprite.Sprite):
-    def __init__(self, game):
+    def __init__(self, game, image):
         super().__init__()
         self.screen = game.screen
         self.settings = game.settings
@@ -14,9 +15,12 @@ class Pipe(pg.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
-
-        self.offset = self.settings['screen-height']/3
-        y2 = self.offset + random.randrange(0, int(['screen-height'] - self.images['floor'].self.screen.get_rect() - 1.2 * self.offset))
+        
+        
+class PipeSet(pg.sprite.Group):
+    def __init__(self, game):
+        super().__init__()
+        
 
 class Birb(pg.sprite.Sprite):
     def __init__(self, game):
