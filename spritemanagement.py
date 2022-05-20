@@ -2,7 +2,8 @@ import pygame as pg
 
 class SpriteSheet:
 
-    def __init__(self, filename):
+    def __init__(self, game, filename):
+        self.resolution = game.resolution
         self.images = {
             'bg':(3,0,144,256),
             'pipe_up':(152,3,25,159),
@@ -22,7 +23,8 @@ class SpriteSheet:
             if colorkey == -1:
                 colorkey = image.get_at((0,0))
             image.set_colorkey(colorkey, pg.RLEACCEL)
-        return image
+        temp_res = ((rect.w*2)*1.66,rect.h*2)
+        return pg.transform.scale(image,temp_res)
     
     def get_image_of(self,name):
         rect = self.images[name]
