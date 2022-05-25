@@ -21,6 +21,9 @@ class PipeSet(pg.sprite.Group):
     def __init__(self, game):
         super().__init__()
         
+        random_position = random.randint(100, -100)
+        pipe_up.rect.y = 0 + random_position
+        pipe_down.rect.y = pipe_up.rect.y + 697
 
 class Birb(pg.sprite.Sprite):
     def __init__(self, game):
