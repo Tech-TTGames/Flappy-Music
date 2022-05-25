@@ -1,29 +1,42 @@
 import pygame as pg
 import random
-import spritemanagement
-import random
 
 class Pipe(pg.sprite.Sprite):
-    def __init__(self, game, image):
+    def __init__(self, game, rectoffset, Rotation):
         super().__init__()
         self.screen = game.screen
         self.settings = game.settings
         self.screen_rect = self.screen.get_rect()
+        if Rotation:
+            self.image = game.sheet.get_image_of('pipe_down')
+            self.rect = self.image.get_rect()
+            self.rect.y = rectoffset + self.rect.h - self.rect.h/2
+        else:
+            self.image = game.sheet.get_image_of('pipe_up')
+            self.rect = self.image.get_rect()
+            self.rect.y = rectoffset - self.rect.h/2
 
-        self.pipe_image_up = game.sheet.get_image_of('pipe_up')
-        self.pipe_image_down = game.sheet.get_image_of('pipe_down')
-
-        self.rect = self.image.get_rect()
+        
+        #self.rect.x = self.settings['pipegen-length'] - 12.5
+        self.rect.x = 400
+        
+    
+    def update(self):
+        self.rect.x -= 0.1*self.settings["scroll-speed"]
 
         
         
 class PipeSet(pg.sprite.Group):
     def __init__(self, game):
         super().__init__()
-        
-        random_position = random.randint(100, -100)
-        pipe_up.rect.y = 0 + random_position
-        pipe_down.rect.y = pipe_up.rect.y + 697
+        self.settings = game.settings
+
+        random_position = random.randint(110,260)
+        pipe_up_y_rect = random_position - 100
+        pipe_down_y_rect = pipe_up_y_rect + 100
+        self.add(Pipe(game,pipe_up_y_rect,False))
+        self.add(Pipe(game,pipe_down_y_rect,True))
+
 
 class Birb(pg.sprite.Sprite):
     def __init__(self, game):

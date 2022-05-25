@@ -21,6 +21,9 @@ class MusiBirb:
         #self.birb = game_objects.Birb(self)
         self.floors = pg.sprite.Group()
         self._init_floor()
+
+        #TEST ZONE
+        self.pipe_test = game_objects.PipeSet(self)
     
     def _render_background(self):
         self.screen.fill((0,0,0))
@@ -47,20 +50,22 @@ class MusiBirb:
             if event.type == pg.QUIT:
                 self.running = False
             elif event.type == pg.KEYDOWN:
-                if event.key == 'SPACE' and not self.brib.jumping:
+                if event.key == 'SPACE' and not self.birb.jumping:
                     self.birb.jump()
     
     def _update_sprites(self):
         self.floors.update()
+        self.pipe_test.update()
     
     def _draw_sprites(self):
-        self.floors.draw(self.screen)
+        self.pipe_test.draw(self.screen)
+        self.floors.draw(self.screen) #This HAS to be last.
 
     def run_game(self):
         self.running = True
         while self.running:
-            self._check_events()
             self._render_background()
+            self._check_events()
             self._update_sprites()
             self._draw_sprites()
             pg.display.update()
