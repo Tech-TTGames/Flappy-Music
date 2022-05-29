@@ -21,9 +21,10 @@ class MusiBirb:
         #self.birb = game_objects.Birb(self)
         self.floors = pg.sprite.Group()
         self._init_floor()
+        self.pipes = []
+        self._init_pipes()
 
         #TEST ZONE
-        self.pipe_test = game_objects.PipeSet(self)
     
     def _render_background(self):
         self.screen.fill((0,0,0))
@@ -45,6 +46,12 @@ class MusiBirb:
         floor.rect.x = screen_rect.left + floor.rect.w
         self.floors.add(floor)
     
+    def _init_pipes(self):
+        for pid in range(self.settings["pipegen-length"]):
+            x = 200 + pid*252
+            pipe_set = game_objects.PipeSet(self,x)
+            self.pipes.append(pipe_set)
+    
     def _check_events(self):
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -55,10 +62,15 @@ class MusiBirb:
     
     def _update_sprites(self):
         self.floors.update()
-        self.pipe_test.update()
+        for set in range(len(self.pipes)):
+            self.pipes[set].update()
+            if not self.pipes[set]:
+                self.pipes[set].generate(self.settings["pipegen-length"]*252-26)
+
     
     def _draw_sprites(self):
-        self.pipe_test.draw(self.screen)
+        for set in self.pipes:
+            set.draw(self.screen)
         self.floors.draw(self.screen) #This HAS to be last.
 
     def run_game(self):
