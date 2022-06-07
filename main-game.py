@@ -61,6 +61,7 @@ class MusiBirb:
                     self.birb.jump()
     
     def _update_sprites(self):
+        self.birb.update()
         self.floors.update()
         for set in range(len(self.pipes)):
             self.pipes[set].update()
@@ -69,6 +70,7 @@ class MusiBirb:
 
     
     def _draw_sprites(self):
+        self.birb.draw(self.screen)
         for set in self.pipes:
             set.draw(self.screen)
         self.floors.draw(self.screen) #This HAS to be last.
