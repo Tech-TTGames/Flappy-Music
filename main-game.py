@@ -1,5 +1,6 @@
 import pygame as pg
 from spritemanagement import SpriteSheet
+from GUI import ScoreCounter
 import game_objects
 import json
 
@@ -23,6 +24,7 @@ class MusiBirb:
         self._init_floor()
         self.pipes = []
         self._init_pipes()
+        self.score = ScoreCounter(self)
 
         #TEST ZONE
     
@@ -57,11 +59,12 @@ class MusiBirb:
             if event.type == pg.QUIT:
                 self.running = False
             elif event.type == pg.KEYDOWN:
-                if event.key == 'SPACE' and not self.birb.jumping:
+                if event.key == pg.K_SPACE and not self.birb.jumping:
                     self.birb.jump()
     
     def _update_sprites(self):
         self.floors.update()
+        self.score.update_score()
         for set in range(len(self.pipes)):
             self.pipes[set].update()
             if not self.pipes[set]:
@@ -71,6 +74,7 @@ class MusiBirb:
     def _draw_sprites(self):
         for set in self.pipes:
             set.draw(self.screen)
+        self.score.draw(self.screen)
         self.floors.draw(self.screen) #This HAS to be last.
 
     def run_game(self):
