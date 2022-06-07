@@ -63,6 +63,7 @@ class MusiBirb:
                     self.birb.jump()
     
     def _update_sprites(self):
+        self.birb.update()
         self.floors.update()
         self.score.update_score()
         for set in range(len(self.pipes)):
@@ -72,6 +73,7 @@ class MusiBirb:
 
     
     def _draw_sprites(self):
+        self.birb.draw(self.screen)
         for set in self.pipes:
             set.draw(self.screen)
         self.score.draw(self.screen)

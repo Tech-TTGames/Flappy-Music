@@ -48,14 +48,32 @@ class Birb(pg.sprite.Sprite):
         self.screen = game.screen
         self.settings = game.settings
         self.screen_rect = self.screen.get_rect()
+        self.screen_height = self.settings["screen-height"]
 
-        self.image = pg.image.load("sprites/birb.bmp")
+        self.images = []
+        self.index = 0
+        self.counter = 0
+        for num in range(1,4):
+            image = game.sheet.get_image_of(f'birb_{num}')
+            self.images.append(image)
+        self.image = self.images[self.index]
         self.rect = self.image.get_rect()
-        self.rect.midleft = self.screen_rect.midleft
+        self.rect.center = [x, y]
+
+        birb_group = pygame.sprite.Group()
+
+        flappy = Birb(self.settings["birb-position-x"], self.screen_height / 2)
 
         self.jumping = False
     
     def jump(self):
+        
+        
+        
+        
+        
+        
+        
         pass #IMPLEMENT JUMP
 
 class Floor(pg.sprite.Sprite):
