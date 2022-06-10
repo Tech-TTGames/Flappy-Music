@@ -20,7 +20,7 @@ class MusiBirb:
         self.bg_img = self.sheet.get_image_of('bg')
         self.bg_img = pg.transform.scale(self.bg_img,self.resolution)
         self.bg_offset = 0
-        #self.birb = game_objects.Birb(self)
+        self.birb = game_objects.Birb(self)
         self.floors = pg.sprite.Group()
         self._init_floor()
         self.pipes = []
@@ -64,7 +64,7 @@ class MusiBirb:
                     self.birb.jump()
     
     def _update_sprites(self):
-        self.birb_group.update()
+        self.birb.update()
         self.floors.update()
         self.score.update_score()
         for set in range(len(self.pipes)):
@@ -74,10 +74,10 @@ class MusiBirb:
 
     
     def _draw_sprites(self):
-        self.birb_group.draw(self.screen)
         for set in self.pipes:
             set.draw(self.screen)
         self.score.draw(self.screen)
+        self.birb.render()
         self.floors.draw(self.screen) #This HAS to be last.
 
     def run_game(self):

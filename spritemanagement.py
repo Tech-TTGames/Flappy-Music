@@ -31,7 +31,7 @@ class SpriteSheet:
         except:
             raise Exception(f'Could not load texture file: {filename}!')
     
-    def get_image_at(self,rectangle,colorkey = None):
+    def get_image_at(self,rectangle,adjust,colorkey = None):
         rect = pg.Rect(rectangle)
         image = pg.Surface(rect.size).convert_alpha()
         image.blit(self.sheet, (0,0), rect)
@@ -39,9 +39,14 @@ class SpriteSheet:
             if colorkey == -1:
                 colorkey = image.get_at((0,0))
             image.set_colorkey(colorkey, pg.RLEACCEL)
-        temp_res = ((rect.w*2)*1.66,rect.h*2)
+        if adjust == 'R':
+            temp_res = ((rect.w*2)*1.66,rect.h*2)
+        elif adjust == 3:
+            temp_res = (rect.w*3,rect.h*3)
+        else:
+            temp_res = (rect.w*2,rect.h*2)
         return pg.transform.scale(image,temp_res).convert_alpha()
     
-    def get_image_of(self,name):
+    def get_image_of(self,name,adjust = 'R'):
         rect = self.images[name]
-        return self.get_image_at(rect,(0,0,0))
+        return self.get_image_at(rect,adjust,(0,0,0))

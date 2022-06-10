@@ -37,61 +37,50 @@ class PipeSet(pg.sprite.Group):
     
     def generate(self,x):
         random_position = random.randint(110,260)
-        pipe_up_y_rect = random_position - 110
-        pipe_down_y_rect = pipe_up_y_rect + 110
+        pipe_up_y_rect = random_position - 150
+        pipe_down_y_rect = pipe_up_y_rect + 150
         self.add(Pipe(self.game,pipe_up_y_rect,False,x))
         self.add(Pipe(self.game,pipe_down_y_rect,True,x))
 
 class Birb(pg.sprite.Sprite):
-    def __init__(self, x, y, game):
+    def __init__(self, game):
         super().__init__()
         self.screen = game.screen
         self.settings = game.settings
         self.screen_rect = self.screen.get_rect()
-        self.screen_height = self.settings["screen-height"]
 
         self.images = []
         self.index = 0
         self.counter = 0
+        self.jumping_state = 0
+
         for num in range(1,4):
-            image = game.sheet.get_image_of(f'birb_{num}')
+            image = game.sheet.get_image_of(f'birb_{num}',3)
             self.images.append(image)
+
         self.image = self.images[self.index]
         self.rect = self.image.get_rect()
-        self.rect.center = [x, y]
-        self.jumping = False
-        flappy = Birb(self.settings["birb-position-x"], self.screen_height / 2)
-        birb_group = pg.sprite.Group()
-        birb_group.add(flappy)
-
-    
-    
-    
-
-        
+        self.rect.right = self.screen_rect.w / 2
+        self.rect.y = self.screen_rect.h / 2
             
     def update(self):
-
         #handle the animation
         self.counter += 1
-        flap_cooldown = 5
+        flap_cooldown = 20
 
         if self.counter > flap_cooldown:
             self.counter = 0
             self.index += 1
             if self.index >= len(self.images):
                 self.index = 0
+
+            self.image = self.images[self.index]
         
-    
     def jump(self):
-        
-        
-        
-        
-        
-        
-        
         pass #IMPLEMENT JUMP
+
+    def render(self):
+        self.screen.blit(self.image,self.rect)
 
 class Floor(pg.sprite.Sprite):
     def __init__(self, game):
