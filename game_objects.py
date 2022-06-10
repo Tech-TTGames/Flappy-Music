@@ -43,7 +43,7 @@ class PipeSet(pg.sprite.Group):
         self.add(Pipe(self.game,pipe_down_y_rect,True,x))
 
 class Birb(pg.sprite.Sprite):
-    def __init__(self, game):
+    def __init__(self, x, y, game):
         super().__init__()
         self.screen = game.screen
         self.settings = game.settings
@@ -59,12 +59,29 @@ class Birb(pg.sprite.Sprite):
         self.image = self.images[self.index]
         self.rect = self.image.get_rect()
         self.rect.center = [x, y]
-
-        birb_group = pygame.sprite.Group()
-
-        flappy = Birb(self.settings["birb-position-x"], self.screen_height / 2)
-
         self.jumping = False
+        flappy = Birb(self.settings["birb-position-x"], self.screen_height / 2)
+        birb_group = pg.sprite.Group()
+        birb_group.add(flappy)
+
+    
+    
+    
+
+        
+            
+    def update(self):
+
+        #handle the animation
+        self.counter += 1
+        flap_cooldown = 5
+
+        if self.counter > flap_cooldown:
+            self.counter = 0
+            self.index += 1
+            if self.index >= len(self.images):
+                self.index = 0
+        
     
     def jump(self):
         

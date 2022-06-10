@@ -3,6 +3,7 @@ from spritemanagement import SpriteSheet
 from GUI import ScoreCounter
 import game_objects
 import json
+from pygame.locals import *
 
 class MusiBirb:
     def __init__(self):
@@ -63,7 +64,7 @@ class MusiBirb:
                     self.birb.jump()
     
     def _update_sprites(self):
-        self.birb.update()
+        self.birb_group.update()
         self.floors.update()
         self.score.update_score()
         for set in range(len(self.pipes)):
@@ -73,7 +74,7 @@ class MusiBirb:
 
     
     def _draw_sprites(self):
-        self.birb.draw(self.screen)
+        self.birb_group.draw(self.screen)
         for set in self.pipes:
             set.draw(self.screen)
         self.score.draw(self.screen)
