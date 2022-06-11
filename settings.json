@@ -5,5 +5,7 @@
     "screen-width":420,
     "screen-height":697,
     "pipegen-length":5,
-    "birb-position-x":100
+    "birb-position-x":100,
+    "birb-velocity":0,
+    "flying":0
 }

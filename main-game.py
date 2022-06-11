@@ -60,8 +60,15 @@ class MusiBirb:
             if event.type == pg.QUIT:
                 self.running = False
             elif event.type == pg.KEYDOWN:
-                if event.key == pg.K_SPACE and not self.birb.jumping:
-                    self.birb.jump()
+                if event.type == pg.K_SPACE and self.settings['flying'] == 0:
+                    self.settings['flying'] = 1
+            elif event.type == pg.MOUSEBUTTONDOWN and self.settings['flying'] == 0:
+                self.settings['flying'] = 1
+
+
+            # elif event.type == pg.KEYDOWN:
+            #     if event.key == pg.K_SPACE and not self.birb.jumping:
+            #         self.birb.jump()
     
     def _update_sprites(self):
         self.birb.update()
