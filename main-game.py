@@ -59,11 +59,10 @@ class MusiBirb:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.running = False
-            elif event.type == pg.KEYDOWN:
-                if event.type == pg.K_SPACE and self.settings['flying'] == 0:
-                    self.settings['flying'] = 1
-            elif event.type == pg.MOUSEBUTTONDOWN and self.settings['flying'] == 0:
-                self.settings['flying'] = 1
+            elif (event.type == pg.KEYDOWN or event.type == pg.MOUSEBUTTONDOWN):
+                if not self.birb.grav:
+                    self.birb.grav = True
+                self.birb.jump()
 
 
             # elif event.type == pg.KEYDOWN:
@@ -83,8 +82,8 @@ class MusiBirb:
     def _draw_sprites(self):
         for set in self.pipes:
             set.draw(self.screen)
-        self.score.draw(self.screen)
         self.birb.render()
+        self.score.draw(self.screen)
         self.floors.draw(self.screen) #This HAS to be last.
 
     def run_game(self):

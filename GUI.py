@@ -24,6 +24,10 @@ class ScoreCounter(pg.sprite.Group):
         self.no.update(clean_score)
         #if crown_no:
             #self.crow.update(crown_no)
+    
+    def up_score(self):
+        self.score += 1
+        self.update_score()
 
 class Crown(pg.sprite.Sprite):
     def __init__(self,game,crowns):

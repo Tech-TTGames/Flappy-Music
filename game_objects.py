@@ -32,6 +32,7 @@ class PipeSet(pg.sprite.Group):
         super().__init__()
         self.settings = game.settings
         self.game = game
+        self.point_torch = True
 
         self.generate(x)
     
@@ -41,6 +42,14 @@ class PipeSet(pg.sprite.Group):
         pipe_down_y_rect = pipe_up_y_rect + 150
         self.add(Pipe(self.game,pipe_up_y_rect,False,x))
         self.add(Pipe(self.game,pipe_down_y_rect,True,x))
+        self.point_torch = True
+    
+    def update(self):
+        super().update()
+        if self.point_torch and self.sprites()[0].rect.x < self.settings["screen-width"]/2:
+            self.game.score.up_score()
+            self.point_torch = False
+
 
 class Birb(pg.sprite.Sprite):
     def __init__(self, game):
@@ -54,7 +63,7 @@ class Birb(pg.sprite.Sprite):
         self.counter = 0
         self.jumping_state = 0
         self.vel = self.settings['birb-velocity']
-        self.clicked = False
+        self.grav = False
 
         for num in range(1,4):
             image = game.sheet.get_image_of(f'birb_{num}',3)
@@ -68,20 +77,12 @@ class Birb(pg.sprite.Sprite):
     def update(self):
         
         #gravity
-        if self.settings['flying'] == 1:
-            self.vel += 0.5
-            if self.vel > 7:
-                self.vel = 7
-            if self.rect.bottom < 581:
-                self.rect.y += int(self.vel)
-
-        #jumping
-        if pg.key.get_pressed()[pg.K_SPACE] == 1 or pg.mouse.get_pressed()[0] == 1 and self.clicked == False:
-            self.clicked = True
-            self.vel = -9
-        
-        if pg.key.get_pressed()[pg.K_SPACE] == 0 or pg.mouse.get_pressed()[0] == 0:
-            self.clicked = False
+        if self.grav:
+            if self.vel < 7:
+                self.vel += 0.1
+            if self.rect.top < 0:
+                self.vel += 1
+            self.rect.y += int(self.vel)
         
         #animation
         self.counter += 1
@@ -98,7 +99,8 @@ class Birb(pg.sprite.Sprite):
         #rotate the birb
         self.image = pg.transform.rotate(self.images[self.index], self.vel * -2)
         
-    # def jump(self):
+    def jump(self):
+        self.vel = -4.5
         
 
     def render(self):
