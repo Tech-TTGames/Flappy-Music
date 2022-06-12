@@ -16,23 +16,18 @@ class Pipe(pg.sprite.Sprite):
             self.rect = self.image.get_rect()
             self.rect.y = rectoffset - self.rect.h/2
 
-        
-        self.rect.x = x
-        
+        self.rect.x = x 
     
     def update(self):
         self.rect.x -= 0.1*self.settings["scroll-speed"]
         if self.rect.right < self.screen_rect.left:
             self.kill()
-
-        
         
 class PipeSet(pg.sprite.Group):
     def __init__(self, game,x):
         super().__init__()
         self.settings = game.settings
         self.game = game
-        self.point_torch = True
 
         self.generate(x)
     
@@ -40,8 +35,10 @@ class PipeSet(pg.sprite.Group):
         random_position = random.randint(110,260)
         pipe_up_y_rect = random_position - 150
         pipe_down_y_rect = pipe_up_y_rect + 150
-        self.add(Pipe(self.game,pipe_up_y_rect,False,x))
-        self.add(Pipe(self.game,pipe_down_y_rect,True,x))
+        p1, p2 = Pipe(self.game,pipe_up_y_rect,False,x), Pipe(self.game,pipe_down_y_rect,True,x)
+        self.add(p1)
+        self.add(p2)
+        self.game.collsprites.add(self)
         self.point_torch = True
     
     def update(self):
@@ -49,6 +46,13 @@ class PipeSet(pg.sprite.Group):
         if self.point_torch and self.sprites()[0].rect.x < self.settings["screen-width"]/2:
             self.game.score.up_score()
             self.point_torch = False
+    
+    def reset(self,x):
+        for sprite in self.sprites():
+            sprite.kill()
+        self.point_torch = True
+        self.generate(x)
+
 
 
 class Birb(pg.sprite.Sprite):
@@ -71,8 +75,8 @@ class Birb(pg.sprite.Sprite):
 
         self.image = self.images[self.index]
         self.rect = self.image.get_rect()
-        self.rect.right = self.screen_rect.w / 2
-        self.rect.y = self.screen_rect.h / 2
+        self.rect.centerx = self.screen_rect.w / 2
+        self.rect.centery = self.screen_rect.h / 2
             
     def update(self):
         
@@ -102,9 +106,18 @@ class Birb(pg.sprite.Sprite):
     def jump(self):
         self.vel = -4.5
         
-
     def render(self):
         self.screen.blit(self.image,self.rect)
+    
+    def reset(self):
+        self.index = 0
+        self.counter = 0
+        self.jumping_state = 0
+        self.vel = self.settings['birb-velocity']
+        self.grav = False
+        self.rect.centerx = self.screen_rect.w / 2
+        self.rect.centery = self.screen_rect.h / 2
+
 
 class Floor(pg.sprite.Sprite):
     def __init__(self, game):
