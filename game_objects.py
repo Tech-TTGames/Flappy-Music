@@ -17,6 +17,7 @@ class Pipe(pg.sprite.Sprite):
             self.rect.y = rectoffset - self.rect.h/2
 
         self.rect.x = x 
+        self.mask = pg.mask.from_surface(self.image)
     
     def update(self):
         self.rect.x -= 0.1*self.settings["scroll-speed"]
@@ -24,7 +25,7 @@ class Pipe(pg.sprite.Sprite):
             self.kill()
         
 class PipeSet(pg.sprite.Group):
-    def __init__(self, game,x):
+    def __init__(self, game, x):
         super().__init__()
         self.settings = game.settings
         self.game = game
@@ -74,6 +75,7 @@ class Birb(pg.sprite.Sprite):
             self.images.append(image)
 
         self.image = self.images[self.index]
+        self.mask = pg.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
         self.rect.centerx = self.screen_rect.w / 2
         self.rect.centery = self.screen_rect.h / 2
@@ -99,9 +101,12 @@ class Birb(pg.sprite.Sprite):
                 self.index = 0
 
             self.image = self.images[self.index]
+
         
         #rotate the birb
         self.image = pg.transform.rotate(self.images[self.index], self.vel * -2)
+        self.rect = self.image.get_rect(center = self.rect.center)
+        self.mask = pg.mask.from_surface(self.image)
         
     def jump(self):
         self.vel = -4.5
@@ -127,6 +132,7 @@ class Floor(pg.sprite.Sprite):
         self.screen_rect = self.screen.get_rect()
 
         self.image = game.sheet.get_image_of('floor')
+        self.mask = pg.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
     
     def update(self):

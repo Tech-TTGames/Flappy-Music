@@ -13,7 +13,7 @@ class ScoreCounter(pg.sprite.Group):
     
     def init_score(self):
         self.no = Number(self.game,[0])
-        self.crow = Crown(self.game,[0])
+        self.crow = Crown(self.game)
         self.add(self.no)
         self.update_score()
     
@@ -37,7 +37,7 @@ class ScoreCounter(pg.sprite.Group):
         self.init_score()
 
 class Crown(pg.sprite.Sprite):
-    def __init__(self,game,crowns):
+    def __init__(self,game):
         super().__init__()
         self.image = game.sheet.get_image_of('crown')
         self.rect = self.image.get_rect()

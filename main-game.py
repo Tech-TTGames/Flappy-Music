@@ -75,7 +75,7 @@ class MusiBirb:
                     self.birb.jump()
     
     def _death_check(self):
-        return pg.sprite.spritecollideany(self.birb,self.collsprites)
+        return pg.sprite.spritecollideany(self.birb,self.collsprites,collided=pg.sprite.collide_mask)
     
     def _update_sprites(self,mode = False):
         if mode != 'dead':
