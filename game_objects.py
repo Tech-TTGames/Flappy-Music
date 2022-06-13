@@ -139,3 +139,8 @@ class Floor(pg.sprite.Sprite):
         self.rect.x -= 0.1*self.settings["scroll-speed"]
         if self.rect.right <= self.screen_rect.left:
             self.rect.x += self.rect.w*2
+
+if __name__ == "__main__":
+    from main_game import MusiBirb
+    MusiInstance = MusiBirb()
+    MusiInstance.run_game()

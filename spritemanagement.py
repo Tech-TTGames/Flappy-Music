@@ -12,11 +12,13 @@ class SpriteSheet:
             'birb_1':(381,187,17,12),
             'birb_2':(381,213,17,12),
             'birb_3':(381,239,17,12),
-            'crown':(251,122,21,9),
+            'crown':(258,123,14,8),
             'ready':(254,71,92,25),
             'over':(152,173,96,21),
             'tap':(370,73,57,19),
             'flappy':(152,200,89,24),
+            'score':(324,195,54,57),
+            'new':(214,126,16,7),
 
             0:(254,98,12,18),
             1:(236,80,12,18),
@@ -28,6 +30,16 @@ class SpriteSheet:
             7:(339,172,12,18),
             8:(353,172,12,18),
             9:(367,172,12,18),
+            's0':(279,171,6,7),
+            's1':(279,180,6,7),
+            's2':(289,171,6,7),
+            's3':(289,180,6,7),
+            's4':(298,171,6,7),
+            's5':(298,180,6,7),
+            's6':(306,171,6,7),
+            's7':(306,180,6,7),
+            's8':(315,171,6,7),
+            's9':(315,180,6,7),
 
         } #FILL IN WITH COORDINATES TO TEXTURE NAMES!
         try:
@@ -37,7 +49,7 @@ class SpriteSheet:
     
     def get_image_at(self,rectangle,adjust,colorkey = None):
         rect = pg.Rect(rectangle)
-        image = pg.Surface(rect.size).convert_alpha()
+        image = pg.Surface(rect.size,pg.SRCALPHA,32).convert_alpha()
         image.blit(self.sheet, (0,0), rect)
         if colorkey is not None:
             if colorkey == -1:
@@ -53,4 +65,9 @@ class SpriteSheet:
     
     def get_image_of(self,name,adjust = 'R'):
         rect = self.images[name]
-        return self.get_image_at(rect,adjust,(0,0,0))
+        return self.get_image_at(rect,adjust)
+
+if __name__ == "__main__":
+    from main_game import MusiBirb
+    MusiInstance = MusiBirb()
+    MusiInstance.run_game()

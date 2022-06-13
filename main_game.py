@@ -4,7 +4,7 @@ from spritemanagement import SpriteSheet
 from GUI import ScoreCounter, MenuOverlay
 import game_objects
 import json
-from pygame.locals import *
+from time import time
 
 class MusiBirb:
     def __init__(self):
@@ -27,6 +27,8 @@ class MusiBirb:
         self._init_floor()
         self.overlay = MenuOverlay(self)
         self.initialize_field()
+        self.state_change_time = time()
+        self.best = (0,0)
     
     def _render_background(self,mode = False):
         self.screen.fill((0,0,0))
@@ -59,15 +61,15 @@ class MusiBirb:
     
     def _check_events(self,mode = False):
         for event in pg.event.get():
-            if event.type == QUIT:
+            if event.type == pg.QUIT:
                 pg.quit()
                 exit()
-            if mode == 'menu':
+            if mode == 'menu' and self.state_change_time < time()-0.5:
                 if (event.type == pg.KEYDOWN or event.type == pg.MOUSEBUTTONDOWN):
                     self.birb.grav = True
                     self.birb.jump()
                     return True
-            elif mode == 'dead':
+            elif mode == 'dead' and self.state_change_time < time()-0.5:
                 if (event.type == pg.KEYDOWN or event.type == pg.MOUSEBUTTONDOWN):
                     return True
             else:    
@@ -88,11 +90,12 @@ class MusiBirb:
                     self.pipes[set].generate(self.settings["pipegen-length"]*252-26)
 
     
-    def _draw_sprites(self):
+    def _draw_sprites(self,mode = False):
         for set in self.pipes:
             set.draw(self.screen)
         self.birb.render()
-        self.score.draw(self.screen)
+        if mode != 'menu' and mode != 'dead':
+            self.score.draw(self.screen)
         self.floors.draw(self.screen) #This HAS to be last.
 
     def initialize_field(self):
@@ -110,23 +113,40 @@ class MusiBirb:
 
 
     def menu(self):
+        self.state_change_time = time()
         while True:
             self._render_background()
             if self._check_events('menu'):
                 break
             self._update_sprites('menu')
-            self._draw_sprites()
+            self._draw_sprites('menu')
             self.overlay.draw_menu('menu')
             pg.display.update()
             self.clock.tick(120)
+    
+    def check_best(self):
+        try:
+            with open('data.sav','r') as f:
+                try:
+                    self.best = (False,int(f.readline()))
+                except ValueError:
+                    print('Save file corrupted!')
+        except FileNotFoundError:
+            pass
+        finally:
+            if self.score.score > self.best[1]:
+                with open('data.sav','w') as f:
+                    f.write(str(self.score.score))
+                self.best = (True,self.score.score)
 
     def death_screen(self):
+        self.state_change_time = time()
         while True:
             self._render_background('dead')
             if self._check_events('dead'):
                 break
             self._update_sprites('dead')
-            self._draw_sprites()
+            self._draw_sprites('dead')
             self.overlay.draw_menu('dead')
             pg.display.update()
             self.clock.tick(120)
@@ -145,6 +165,7 @@ class MusiBirb:
     def run_game(self):
         self.menu()
         self.game_loop()
+        self.check_best()
         self.death_screen()
 
 if __name__ == "__main__":
