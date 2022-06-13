@@ -110,6 +110,8 @@ class Birb(pg.sprite.Sprite):
         
     def jump(self):
         self.vel = -4.5
+        self.index = 0
+        self.counter = 0
         
     def render(self):
         self.screen.blit(self.image,self.rect)
