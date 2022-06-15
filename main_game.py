@@ -15,7 +15,6 @@ class MusiBirb:
         pg.display.set_caption("Flappy Music!")
         self.resolution = (self.settings["screen-width"],self.settings["screen-height"])
         self.screen = pg.display.set_mode(self.resolution)
-        self.running = False
         self.collsprites = pg.sprite.Group()
 
         self.sheet = SpriteSheet(self,'sprites/FlappyBirdSprites.png')
@@ -29,12 +28,14 @@ class MusiBirb:
         self.initialize_field()
         self.state_change_time = time()
         self.best = (0,0)
+        self.skip_death = True
+        self.mode = False
     
-    def _render_background(self,mode = False):
+    def _render_background(self):
         self.screen.fill((0,0,0))
         self.screen.blit(self.bg_img,(self.bg_offset,0))
         self.screen.blit(self.bg_img,(self.resolution[0]+self.bg_offset,0))
-        if mode != 'dead':
+        if self.mode != 3:
             if self.bg_offset <=-self.resolution[0]:
                 self.screen.blit(self.bg_img,(self.resolution[0]+self.bg_offset,0))
                 self.bg_offset = 0
@@ -59,17 +60,17 @@ class MusiBirb:
             pipe_set = game_objects.PipeSet(self,x)
             self.pipes.append(pipe_set)
     
-    def _check_events(self,mode = False):
+    def _check_events(self):
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
                 exit()
-            if mode == 'menu' and self.state_change_time < time()-0.5:
+            if self.mode == 2 and self.state_change_time < time()-0.5:
                 if (event.type == pg.KEYDOWN or event.type == pg.MOUSEBUTTONDOWN):
                     self.birb.grav = True
                     self.birb.jump()
                     return True
-            elif mode == 'dead' and self.state_change_time < time()-0.5:
+            elif self.mode == 3 and self.state_change_time < time()-0.5:
                 if (event.type == pg.KEYDOWN or event.type == pg.MOUSEBUTTONDOWN):
                     return True
             else:    
@@ -79,21 +80,21 @@ class MusiBirb:
     def _death_check(self):
         return pg.sprite.spritecollideany(self.birb,self.collsprites,collided=pg.sprite.collide_mask)
     
-    def _update_sprites(self,mode = False):
-        if mode != 'dead':
+    def _update_sprites(self):
+        if self.mode != 3:
             self.birb.update()
             self.floors.update()
-        if mode != 'menu' and mode != 'dead':
+        if self.mode != 2 and self.mode != 3:
             for set in range(len(self.pipes)):
                 self.pipes[set].update()
                 if not self.pipes[set]:
                     self.pipes[set].generate(self.settings["pipegen-length"]*252-26)
 
     
-    def _draw_sprites(self,mode = False):
+    def _draw_sprites(self):
         for set in self.pipes:
             set.draw(self.screen)
-        if mode != 'menu' and mode != 'dead':
+        if self.mode != 2 and self.mode != 3:
             self.score.draw(self.screen)
         self.floors.draw(self.screen)
         self.birb.render()
@@ -128,33 +129,39 @@ class MusiBirb:
 
     def menu(self):
         self.state_change_time = time()
-        self.overlay.gen_menu('menu')
+        self.mode = 2
+        self.overlay.gen_menu()
         while True:
             self._render_background()
-            if self._check_events('menu'):
+            if self._check_events():
                 break
-            self._update_sprites('menu')
-            self._draw_sprites('menu')
-            self.overlay.draw_menu('menu')
+            self._update_sprites()
+            self._draw_sprites()
+            self.overlay.draw_menu()
             pg.display.update()
             self.clock.tick(120)
 
     def death_screen(self):
+        if self.skip_death:
+            self.skip_death = False
+            return True
         self.state_change_time = time()
-        self.overlay.gen_menu('dead')
+        self.mode = 3
+        self.overlay.gen_menu()
         while True:
-            self._render_background('dead')
-            if self._check_events('dead'):
+            self._render_background()
+            if self._check_events():
                 break
-            self._update_sprites('dead')
-            self._draw_sprites('dead')
-            self.overlay.draw_menu('dead')
+            self._update_sprites()
+            self._draw_sprites()
+            self.overlay.draw_menu()
             pg.display.update()
             self.clock.tick(120)
         self.re_initialize()
-        self.run_game()
+        return True
     
     def game_loop(self):
+        self.mode = False
         while not self._death_check():
             self._render_background()
             self._check_events()
@@ -164,10 +171,10 @@ class MusiBirb:
             self.clock.tick(120)
 
     def run_game(self):
-        self.menu()
-        self.game_loop()
-        self.check_best()
-        self.death_screen()
+        while self.death_screen():
+            self.menu()
+            self.game_loop()
+            self.check_best()
 
 if __name__ == "__main__":
     MusiInstance = MusiBirb()

@@ -86,11 +86,11 @@ class MenuOverlay:
         self.score_result = self.sheet.get_image_of('score',3)
         self.score_rect = self.score_result.get_rect()
     
-    def gen_menu(self,type):
-        if type == 'menu':
+    def gen_menu(self):
+        if self.game.mode == 2:
             self.title = self.sheet.get_image_of('ready',3)
 
-        elif type == 'dead':
+        elif self.game.mode == 3:
             self.title = self.sheet.get_image_of('over',3)
             self.score_result = self.sheet.get_image_of('score',3)
             self.score_rect = self.score_result.get_rect()
@@ -119,10 +119,10 @@ class MenuOverlay:
         self.title_rect = self.title.get_rect()
 
 
-    def draw_menu(self,type):
+    def draw_menu(self):
         self.screen.blit(self.title,(self.screen_rect.w/2-self.title_rect.w/2,150))
         self.screen.blit(self.tap_img,(self.screen_rect.w/2-self.tap_rect.w/2,self.screen_rect.h/2+100))
-        if type == 'dead':
+        if self.game.mode == 3:
             self.screen.blit(self.score_result,(self.screen_rect.w/2-self.score_rect.w/2,self.screen_rect.h/2-self.score_rect.h/2))
 
 if __name__ == "__main__":
