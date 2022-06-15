@@ -93,37 +93,11 @@ class MusiBirb:
     def _draw_sprites(self,mode = False):
         for set in self.pipes:
             set.draw(self.screen)
-        self.birb.render()
         if mode != 'menu' and mode != 'dead':
             self.score.draw(self.screen)
-        self.floors.draw(self.screen) #This HAS to be last.
+        self.floors.draw(self.screen)
+        self.birb.render()
 
-    def initialize_field(self):
-        self.birb = game_objects.Birb(self)
-        self.pipes = []
-        self._init_pipes()
-        self.score = ScoreCounter(self)
-    
-    def re_initialize(self):
-        self.birb.reset()
-        self.score.clear()
-        for pid in range(self.settings["pipegen-length"]):
-            x = 440 + pid*252
-            self.pipes[pid].reset(x)
-
-
-    def menu(self):
-        self.state_change_time = time()
-        while True:
-            self._render_background()
-            if self._check_events('menu'):
-                break
-            self._update_sprites('menu')
-            self._draw_sprites('menu')
-            self.overlay.draw_menu('menu')
-            pg.display.update()
-            self.clock.tick(120)
-    
     def check_best(self):
         try:
             with open('data.sav','r') as f:
@@ -139,8 +113,35 @@ class MusiBirb:
                     f.write(str(self.score.score))
                 self.best = (True,self.score.score)
 
+    def initialize_field(self):
+        self.birb = game_objects.Birb(self)
+        self.pipes = []
+        self._init_pipes()
+        self.score = ScoreCounter(self)
+    
+    def re_initialize(self):
+        self.birb.reset()
+        self.score.clear()
+        for pid in range(self.settings["pipegen-length"]):
+            x = 440 + pid*252
+            self.pipes[pid].reset(x)
+
+    def menu(self):
+        self.state_change_time = time()
+        self.overlay.gen_menu('menu')
+        while True:
+            self._render_background()
+            if self._check_events('menu'):
+                break
+            self._update_sprites('menu')
+            self._draw_sprites('menu')
+            self.overlay.draw_menu('menu')
+            pg.display.update()
+            self.clock.tick(120)
+
     def death_screen(self):
         self.state_change_time = time()
+        self.overlay.gen_menu('dead')
         while True:
             self._render_background('dead')
             if self._check_events('dead'):

@@ -79,15 +79,21 @@ class MenuOverlay:
         self.screen = self.game.screen
         self.screen_rect = self.screen.get_rect()
         self.sheet = self.game.sheet
+        self.tap_img = self.sheet.get_image_of('tap',3)
+        self.tap_rect =self.tap_img.get_rect()
+        self.title = self.sheet.get_image_of('flappy',3)
+        self.title_rect = self.title.get_rect()
+        self.score_result = self.sheet.get_image_of('score',3)
+        self.score_rect = self.score_result.get_rect()
     
-    def draw_menu(self,type):
+    def gen_menu(self,type):
         if type == 'menu':
-            title = self.sheet.get_image_of('ready',3)
+            self.title = self.sheet.get_image_of('ready',3)
 
         elif type == 'dead':
-            title = self.sheet.get_image_of('over',3)
-            score_result = self.sheet.get_image_of('score',3)
-            score_rect = score_result.get_rect()
+            self.title = self.sheet.get_image_of('over',3)
+            self.score_result = self.sheet.get_image_of('score',3)
+            self.score_rect = self.score_result.get_rect()
             score = [int(a) for a in str(self.game.score.score)]
             best_score = [int(a) for a in str(self.game.best[1])]
             no_surf = pg.Surface((len(score)*24,21), pg.SRCALPHA, 32).convert_alpha()
@@ -96,9 +102,9 @@ class MenuOverlay:
             no_surf.convert_alpha()
             no_rect = no_surf.get_rect()
             no_rect.topright = (120,57)
-            score_result.blit(no_surf,no_rect)
+            self.score_result.blit(no_surf,no_rect)
             if self.game.best[0]:
-                score_result.blit(self.sheet.get_image_of('new',3),(12,87))
+                self.score_result.blit(self.sheet.get_image_of('new',3),(12,87))
             else:
                 no_surf = pg.Surface((len(best_score)*24,21), pg.SRCALPHA, 32).convert_alpha()
                 for no in range(len(best_score)):
@@ -106,16 +112,18 @@ class MenuOverlay:
                 no_surf.convert_alpha()
             no_rect = no_surf.get_rect()
             no_rect.topright = (120,123)
-            score_result.blit(no_surf,no_rect)
-            self.screen.blit(score_result,(self.screen_rect.w/2-score_rect.w/2,self.screen_rect.h/2-score_rect.h/2))
+            self.score_result.blit(no_surf,no_rect)
 
         else:
-            title = self.sheet.get_image_of('flappy',3)
-        tap = self.sheet.get_image_of('tap',3)
-        title_rect = title.get_rect()
-        tap_rect = tap.get_rect()
-        self.screen.blit(title,(self.screen_rect.w/2-title_rect.w/2,150))
-        self.screen.blit(tap,(self.screen_rect.w/2-tap_rect.w/2,self.screen_rect.h/2+100))
+            self.title = self.sheet.get_image_of('flappy',3)
+        self.title_rect = self.title.get_rect()
+
+
+    def draw_menu(self,type):
+        self.screen.blit(self.title,(self.screen_rect.w/2-self.title_rect.w/2,150))
+        self.screen.blit(self.tap_img,(self.screen_rect.w/2-self.tap_rect.w/2,self.screen_rect.h/2+100))
+        if type == 'dead':
+            self.screen.blit(self.score_result,(self.screen_rect.w/2-self.score_rect.w/2,self.screen_rect.h/2-self.score_rect.h/2))
 
 if __name__ == "__main__":
     from main_game import MusiBirb
